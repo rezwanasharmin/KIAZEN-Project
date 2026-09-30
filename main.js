@@ -111,6 +111,8 @@ function formatPrice(audAmount) {
   return `${symbol}${converted.toFixed(2)}${suffix}`;
 }
 
+let cartInstance = null;
+
 function updateAllPricesOnPage() {
   document.querySelectorAll('[data-aud]').forEach(el => {
     const audVal = parseFloat(el.getAttribute('data-aud'));
@@ -118,7 +120,9 @@ function updateAllPricesOnPage() {
       el.textContent = formatPrice(audVal);
     }
   });
-  renderCart();
+  if (cartInstance && typeof cartInstance.render === 'function') {
+    cartInstance.render();
+  }
 }
 
 // --------------------------------------------------------------------------
@@ -642,6 +646,7 @@ class LoreArcExplorer {
 // --------------------------------------------------------------------------
 class ShoppingCart {
   constructor() {
+    cartInstance = this;
     this.items = [];
     this.discount = 0; // percentage
     this.freeShippingThreshold = 100.0; // AUD
